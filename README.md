@@ -1,0 +1,3 @@
+# Vtkjs to Three.js
+
+a data pipeline from vtk render data to three render data base on vtkjs Source/Mapper/Filter...
