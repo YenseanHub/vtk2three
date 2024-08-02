@@ -1,8 +1,5 @@
 import React, { useRef, useEffect } from "react";
-import vtkFullScreenRenderWindow from "@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow";
-import "@kitware/vtk.js/Rendering/Profiles/Geometry";
-// Load the rendering pieces we want to use (for both WebGL and WebGPU)
-// import "@kitware/vtk.js/Rendering/Profiles/Volume";
+
 import vtkActor from "@kitware/vtk.js/Rendering/Core/Actor";
 import vtkMapper from "@kitware/vtk.js/Rendering/Core/Mapper";
 import vtkPlaneSource from "@kitware/vtk.js/Filters/Sources/PlaneSource";
@@ -12,16 +9,14 @@ import vtkDataSet from "@kitware/vtk.js/Common/DataModel/DataSet";
 import vtkLookupTable from "@kitware/vtk.js/Common/Core/LookupTable";
 import vtkWarpScalar from "@kitware/vtk.js/Filters/General/WarpScalar";
 import { v23Mapper } from "../vtk2three/v23Mapper";
+import ThreeView from "../threeView/main";
+import VtkView from "../vtkView/main";
 
-function HelloVTK() {
+function HelloVTK2Three() {
   const vtkContainerRef = useRef(null);
+  const threeContainerRef = useRef(null);
 
   useEffect(() => {
-    const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance({
-      rootContainer: vtkContainerRef.current,
-    });
-    const renderer = fullScreenRenderer.getRenderer();
-    const renderWindow = fullScreenRenderer.getRenderWindow();
     const lookupTable = vtkLookupTable.newInstance({
       hueRange: [0, 0.667],
     });
@@ -59,24 +54,50 @@ function HelloVTK() {
     warpMapper.setInputConnection(warpScalar.getOutputPort());
 
     const warpActor = vtkActor.newInstance();
-    warpActor.getProperty().setEdgeVisibility(true);
+    // warpActor.getProperty().setEdgeVisibility(true);
     warpActor.setMapper(warpMapper);
 
-    const calMapper = new v23Mapper();
-    calMapper.setActor(warpActor);
-    calMapper.getMeshData();
-    
-    renderer.addActor(warpActor);
-    renderer.resetCamera();
-    renderWindow.render();
-  }, [vtkContainerRef]);
+    // vtk to three mapper
+    const meshMapper = new v23Mapper();
+    meshMapper.setActor(warpActor);
+    const mesh = meshMapper.getMeshData();
+
+    // three&vtk rendering part
+    new ThreeView(threeContainerRef.current, mesh);
+    new VtkView(vtkContainerRef.current, warpActor);
+  }, []);
 
   return (
-    <div
-      ref={vtkContainerRef}
-      style={{ position: "absolute", width: "100%", height: "100%" }}
-    />
+    <>
+      <div
+        ref={vtkContainerRef}
+        style={{
+          position: "absolute",
+          width: "50%",
+          height: "100%",
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: "2px",
+          left: "50%",
+          height: "100%",
+          backgroundColor: "white",
+          zIndex: 82,
+        }}
+      ></div>
+      <div
+        ref={threeContainerRef}
+        style={{
+          position: "absolute",
+          width: "50%",
+          height: "100%",
+          left: "50%",
+        }}
+      />
+    </>
   );
 }
 
-export default HelloVTK;
+export default HelloVTK2Three;

@@ -1,12 +1,12 @@
 import { useRoutes } from "react-router-dom";
 import ErrorPage from "../views/ErrorPage";
-import HelloVTK from "../views/HelloVTK";
+import HelloVTK2Three from "../views/HelloVTK2Three";
 
 export const routers = [
   {
-    path: "/hellovtk",
-    name: "HelloVtk",
-    element: <HelloVTK />,
+    path: "/hellovtk2three",
+    name: "HelloVTK2Three",
+    element: <HelloVTK2Three />,
   },
   {
     path: "*",
