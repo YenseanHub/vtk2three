@@ -29,6 +29,39 @@ a data pipeline from vtk render data to three render data base on vtkjs Source/M
 
 ## how to use
 
+### main mapper code
+
+```js
+import Constants from "@kitware/vtk.js/Rendering/Core/Mapper/Constants";
+import { Mesh } from "three";
+import { GeometryMapper } from "./Core/GeometryMapper";
+import { MaterialMapper } from "./Core/MaterialMapper";
+
+const { ColorMode } = Constants;
+export class v23Mapper {
+  constructor() {
+    this.actor = null;
+  }
+  setActor(actor) {
+    this.actor = actor;
+    this.mapper = actor.getMapper();
+  }
+  getMeshData() {
+    if (this.mapper) {
+      // let bounds = this.mapper.getBounds();
+      const geoMapper = new GeometryMapper(this.mapper);
+      // generate the three geometry
+      const geo = geoMapper.mapGeometry();
+      const matMapper = new MaterialMapper(this.actor.getProperty());
+      // generate the three material
+      const mat = matMapper.mapMaterial();
+      // assemble the mesh
+      const mesh = new Mesh(geo, mat);
+      return mesh;
+    }
+  }
+}
+```
 ### 1. install
 
 ```
