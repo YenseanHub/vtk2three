@@ -1,0 +1,12 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "dist",
+    "rootDir": "src/vtk2three"
+  },
+  "include": ["src/vtk2three"],
+  "exclude": ["src/vtk2three/**/*.test.ts", "src/vtk2three/**/__tests__/**"]
+}
